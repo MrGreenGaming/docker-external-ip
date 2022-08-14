@@ -16,7 +16,9 @@ done
 
         {{ range $index, $container := $containersByExternalIP }}
             {{ range $index, $network := $container.Networks }}
-                iptables -w -t nat -I EXTERNAL_IP -s {{ $network.IP }} -j SNAT --to-source {{ $externalIP }}
+                if [[ ! "{{ $externalIP }}" =~ "10.10.10."* ]]; then
+                    iptables -w -t nat -I EXTERNAL_IP -s {{ $network.IP }} -j SNAT --to-source {{ $externalIP }}
+                fi;
             {{ end }}
         {{ end }}
     {{ end }}
